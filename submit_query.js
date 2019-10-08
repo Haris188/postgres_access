@@ -19,6 +19,10 @@ class SubmitQuery{
             case 'UPDATE':
                 queryString = this.prepareUpdateQuery();
                 break;
+
+            case 'DELETE':
+                queryString = this.prepareDeleteQuery();
+                break;
                         
             default :
                 console.log('wrong query type');
@@ -162,6 +166,38 @@ class SubmitQuery{
         });
 
         return setClause;
+    }
+
+    prepareDeleteQuery(){
+        const deleteOK = this.validateDelete();
+        if(deleteOK){
+            let queryString = '';
+            const deleteFrom = `DELETE FROM ${this.queryMap.table}`;
+            const where = this.queryMap.where === '' ? '' :`WHERE ${this.queryMap.where}`;
+            queryString = `${deleteFrom} ${where}`;
+            return queryString;
+        }
+        else{
+            console.log('Missing data in one of the functions, either deleteFrom, where'); 
+            return false;
+        }
+    }
+
+    validateDelete(){
+        const queryMap = this.queryMap;
+        if(
+            queryMap.table === '' ||
+            queryMap.table === null ||
+            queryMap.table === undefined ||
+
+            queryMap.where === null || 
+            queryMap.where === undefined
+        ){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 }
 

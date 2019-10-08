@@ -2,6 +2,7 @@
 const From = require('./from');
 const ToTable = require('./to_table');
 const SetData = require('./set_data');
+const Where = require('./where');
 
 class Database{
     
@@ -35,15 +36,21 @@ class Database{
             values: '',
             columnNames: '',
             where: ''
-        }
+        };
         return new SetData(queryMap);
+    }
+
+    deleteFrom(table){
+        const queryMap = {
+            type: 'DELETE',
+            table: table,
+            where: '',
+        };
+        return new Where(queryMap);
     }
 }
 
 const hero = new Database()
-    .update('users')
-    .setData()
-    .toColumns('first_name, last_name')
-    .where('id = 4')
+    .deleteFrom()
     .submitQuery();
 console.log(hero);
