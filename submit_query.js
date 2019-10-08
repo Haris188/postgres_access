@@ -15,7 +15,11 @@ class SubmitQuery{
             case 'INSERT':
                 queryString = this.prepareInsertQuery();
                 break;
-        
+
+            case 'UPDATE':
+                queryString = this.prepareUpdateQuery();
+                break;
+                        
             default :
                 console.log('wrong query type');
                 break;
@@ -100,6 +104,64 @@ class SubmitQuery{
         else{
             return true;
         }
+    }
+
+    prepareUpdateQuery(){
+        const updateOK = this.validateUpdate();
+        if(updateOK){
+            let queryString = '';
+            const set = this.prepareSetClause();
+            const update = `UPDATE ${this.queryMap.table}`;
+            const where = this.queryMap.where === '' ? '' :`WHERE ${this.queryMap.where}`;
+            queryString = `${update} ${set} ${where}`;
+            return queryString;
+        }
+        else{
+            console.log('Missing data in one of the functions, either update, data, toColumns, where'); 
+            return false;
+        }
+    }
+
+    validateUpdate(){
+        const queryMap = this.queryMap;
+        if(
+            queryMap.values === '' ||
+            queryMap.values === null ||
+            queryMap.values === undefined ||
+
+            queryMap.table === '' ||
+            queryMap.table === null ||
+            queryMap.table === undefined ||
+
+            queryMap.columnNames === undefined ||
+            queryMap.columnNames === null ||
+            queryMap.columnNames === '' ||
+
+            queryMap.where === null || 
+            queryMap.where === undefined            
+        ){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    prepareSetClause(){
+        const values = `${this.queryMap.values}`.split(',');
+        const columnNames = `${this.queryMap.columnNames}`.split(',');
+        let setClause = 'SET ';
+        
+        columnNames.forEach((value, index)=>{
+            if(index === columnNames.length - 1){
+                setClause += `${value} = ${values[index]}`;
+            }
+            else{
+                setClause += `${value} = ${values[index]},`;
+            }
+        });
+
+        return setClause;
     }
 }
 

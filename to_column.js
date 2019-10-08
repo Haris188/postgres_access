@@ -1,5 +1,6 @@
 
 const SubmitQuery = require('./submit_query');
+const Where = require('./where');
 
 class ToColumn{
     constructor(queryMap){
@@ -14,7 +15,7 @@ class ToColumn{
     toColumns(columnNames){
         const queryMap = this.queryMap;
         queryMap.columnNames = columnNames;
-        return new SubmitQuery(queryMap);
+        return new Where(queryMap);
     }
 }
 
