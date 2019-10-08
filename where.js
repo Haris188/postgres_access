@@ -19,24 +19,8 @@ class Where {
     }
 
     getWhereClause(condition){
-        const conditionEmpty = this.checkEmpty(condition);
-        let whereClause = '';
-        if(conditionEmpty){
-            whereClause = {success: false, data:"where cannot be empty"}
-        }
-        else{
-            whereClause = `WHERE ${condition}`;
-        }
+        const whereClause = condition;
         return whereClause;
-    }
-
-    checkEmpty(condition){
-        if(condition === null || condition === ''){
-            return true;
-        }
-        else{
-            return false;
-        }
     }
 }
 

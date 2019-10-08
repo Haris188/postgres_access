@@ -15,16 +15,10 @@ class From{
     }
 
     getFromClause(tables){
-        const tablesEmpty = tables.length < 1 ? true: false;
-        let fromClause = '';
-        if(tablesEmpty){
-            fromClause = {success: false, data:"from cannot be empty"}
+        if(tables !== undefined){
+            const fromClause = tables.toString();
+            return fromClause;
         }
-        else{
-            const stringTables = tables.toString();
-            fromClause = `FROM ${stringTables}`;
-        }
-        return fromClause;
     }
 }
 
