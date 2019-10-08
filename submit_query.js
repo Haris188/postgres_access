@@ -1,10 +1,11 @@
+
+
 class SubmitQuery{
     constructor(queryMap){
         this.queryMap = queryMap;
     }
 
-    submitQuery(){
-        console.log(this.queryMap);
+    async submitQuery(){
         const queryType = this.queryMap.type;
         let queryString = '';
         switch (queryType) {
@@ -23,16 +24,24 @@ class SubmitQuery{
             case 'DELETE':
                 queryString = this.prepareDeleteQuery();
                 break;
+
+            case 'DROP':
+                queryString = this.prepareDropQuery();
+                break;
+
+            case 'QUERY':
+                queryString = this.prepareQuery();
                         
             default :
                 console.log('wrong query type');
                 break;
         }
         if(queryString){
-            return queryString;
+            const data = await this.executeQuery(queryString);
+            return data;
         }
         else{
-            console.log('error');
+            console.log(`error while executing the query`);
         }
     }
 
@@ -198,6 +207,81 @@ class SubmitQuery{
         else{
             return true;
         }
+    }
+
+    prepareDropQuery(){
+        const dropOK = this.validateDrop();
+        if(dropOK){
+            let queryString = '';
+            const drop = `DROP TABLE ${this.queryMap.table}`;
+            queryString = `${drop}`;
+            return queryString;
+        }
+        else{
+            console.log('Missing data in one of the functions, deleteTable()'); 
+            return false;
+        }
+    }
+
+    validateDrop(){
+        const queryMap = this.queryMap;
+        if(
+            queryMap.table === '' ||
+            queryMap.table === null ||
+            queryMap.table === undefined
+
+        ){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    prepareQuery(){
+        const queryOK = this.validateQuery();
+        if(queryOK){;
+            const queryString = `${this.queryMap.query}`;
+            return queryString;
+        }
+        else{
+            console.log('Missing data in one of the functions, query()'); 
+            return false;
+        }
+    }
+
+    validateQuery(){
+        const queryMap = this.queryMap;
+        if(
+            queryMap.query === '' ||
+            queryMap.query === null ||
+            queryMap.query === undefined
+
+        ){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    executeQuery(queryString){
+        const pool = this.queryMap.pool;
+        return new Promise(resolve=>{
+            pool.query(queryString,
+            (err, response)=>{
+                if(err){
+                    const result = {success:false, data: err};
+                    console.log(err);
+                    resolve(result);
+                }
+                else{
+                    //console.log(response);
+                    const result = {success: true, data:response};
+                    resolve(result);
+                }
+            });
+        });
     }
 }
 

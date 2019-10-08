@@ -1,9 +1,8 @@
+let data = {
+    hee:'haa',
+    bol:'okd',
+}
 
-const values = '2,hell,heave,shit';
-const col = 'id, first, second, third';
+Object.assign(data, {hello:'world'});
+console.log(data);
 
-const val = values.split(',');
-const coll = col.split(',');
-
-console.log(val);
-console.log(coll);

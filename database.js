@@ -3,12 +3,27 @@ const From = require('./from');
 const ToTable = require('./to_table');
 const SetData = require('./set_data');
 const Where = require('./where');
+const SubmitQuery = require('./submit_query');
+const {Pool} = require('pg');
+
+const pool = Pool({
+    host: 'localhost',
+    user: 'haris188',
+    database: 'todo_list',
+    port: '5432',
+    password: 'racer123',
+});
 
 class Database{
+    constructor(database_pool){
+        this.queryMap = {
+            pool: database_pool,
+        }
+    }
     
     get(columnNames){
         const selectClause = this.getSelectClause(columnNames);
-        const queryMap = {type: 'SELECT', select: selectClause};
+        const queryMap = Object.assign(this.queryMap, {type: 'SELECT', select: selectClause});
         return new From(queryMap);
     }
 
@@ -20,37 +35,58 @@ class Database{
     }
 
     add(rowData){
-        const queryMap = {
+        const queryMap = Object.assign(this.queryMap, {
             type: 'INSERT',
             values: rowData,
             table: '',
             columnNames: '',
-        };
+        });
         return new ToTable(queryMap);
     }
 
     update(table){
-        const queryMap = {
+        const queryMap = Object.assign(this.queryMap, {
             type: 'UPDATE',
             table: table,
             values: '',
             columnNames: '',
             where: ''
-        };
+        });
         return new SetData(queryMap);
     }
 
     deleteFrom(table){
-        const queryMap = {
+        const queryMap = Object.assign(this.queryMap, {
             type: 'DELETE',
             table: table,
             where: '',
-        };
+        });
         return new Where(queryMap);
+    }
+
+    deleteTable(table){
+        const queryMap = Object.assign(this.queryMap, {
+            type: 'DROP',
+            table: table,
+        })
+        return new SubmitQuery(queryMap);
+    }
+
+    query(queryString){
+        const queryMap = Object.assign(this.queryMap, {
+            type: 'QUERY',
+            query: queryString
+        });
+        return new SubmitQuery(queryMap);
     }
 }
 
-const hero = new Database()
-    .deleteFrom()
-    .submitQuery();
-console.log(hero);
+
+
+const hero = new Database(pool)
+    .query(`INSERT INTO users VALUES (1, 'haris188', 'domm','Haris')`)
+    .submitQuery()
+    .then(result =>{
+        console.log(result.data.rows);
+    });
+
