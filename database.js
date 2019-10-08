@@ -1,5 +1,6 @@
 
 const From = require('./from');
+const ToTable = require('./to_table');
 
 class Database{
     
@@ -16,32 +17,20 @@ class Database{
         }
     }
 
-    add(row){
-        const valuesClause = this.getValuesClause(row);
+    add(rowData){
         const queryMap = {
-            values: insertClause,
-            into: '',
-            where: '',
-        }
+            type: 'INSERT',
+            values: rowData,
+            table: '',
+            columnNames: '',
+        };
         return new ToTable(queryMap);
-    }
-
-    getValuesClause(row){
-        const rowEmpty = checkEmpty(row);
-        let valuesClause = null;
-        if(rowEmpty){
-            console.log("row cannot be empty");
-        }
-        else{
-            rowsString = row.toString();
-            const valuesClause =`VALUES (${rowsString})`;
-        }
     }
 }
 
 const hero = new Database()
-    .get('*')
-    .from(['sb','ds'])
-    .where('id = 2')
+    .add('3,33,3')
+    .toTable('he')
+    .toColumns('')
     .submitQuery();
 console.log(hero);

@@ -11,8 +11,12 @@ class SubmitQuery{
             case 'SELECT':
                 queryString = this.prepareSelectQuery();
                 break;
+
+            case 'INSERT':
+                queryString = this.prepareInsertQuery();
+                break;
         
-            default:
+            default :
                 console.log('wrong query type');
                 break;
         }
@@ -53,6 +57,43 @@ class SubmitQuery{
 
             queryMap.where === null || 
             queryMap.where === undefined
+        ){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    prepareInsertQuery(){
+        const insertOK = this.validateInsert();
+        if(insertOK){
+            let queryString = '';
+            const insert = `INSERT INTO ${this.queryMap.table}`;
+            const values = `VALUES (${this.queryMap.values})`;
+            const columnNames = this.queryMap.columnNames === '' ? '' :`(${this.queryMap.columnNames})`;
+            queryString = `${insert}${columnNames} ${values}`;
+            return queryString;
+        }
+        else{
+            console.log('Missing data in one of the functions, either get, toTable or toColumns'); 
+            return false;
+        }
+    }
+
+    validateInsert(){
+        const queryMap = this.queryMap;
+        if(
+            queryMap.values === '' ||
+            queryMap.values === null ||
+            queryMap.values === undefined ||
+
+            queryMap.table === '' ||
+            queryMap.table === null ||
+            queryMap.table === undefined ||
+
+            queryMap.columnNames === undefined ||
+            queryMap.columnNames === null 
         ){
             return false;
         }
