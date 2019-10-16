@@ -4,15 +4,9 @@ const ToTable = require('./to_table');
 const SetData = require('./set_data');
 const Where = require('./where');
 const SubmitQuery = require('./submit_query');
-const {Pool} = require('pg');
 
-const pool = Pool({
-    host: 'localhost',
-    user: 'haris188',
-    database: 'todo_list',
-    port: '5432',
-    password: 'racer123',
-});
+
+
 
 class Database{
     constructor(database_pool){
@@ -81,12 +75,4 @@ class Database{
     }
 }
 
-
-
-const hero = new Database(pool)
-    .query(`INSERT INTO users VALUES (1, 'haris188', 'domm','Haris')`)
-    .submitQuery()
-    .then(result =>{
-        console.log(result.data.rows);
-    });
-
+module.exports = Database;
