@@ -31,6 +31,7 @@ class SubmitQuery{
 
             case 'QUERY':
                 queryString = this.prepareQuery();
+                break;
                         
             default :
                 console.log('wrong query type');
